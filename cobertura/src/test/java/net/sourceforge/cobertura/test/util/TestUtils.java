@@ -90,10 +90,12 @@ public class TestUtils {
 	public static Node getXMLReportDOM(String xmlReport)
 			throws ParserConfigurationException, SAXException, IOException {
 		XmlParser parser = new XmlParser();
-		parser
-				.setFeature(
-						"http://apache.org/xml/features/nonvalidating/load-external-dtd",
-						false);
+		parser.setFeature(
+			"http://apache.org/xml/features/nonvalidating/load-external-dtd",
+			false);
+		parser.setFeature(
+			"http://apache.org/xml/features/disallow-doctype-decl",
+			false);
 		return parser.parse(xmlReport);
 	}
 
@@ -481,10 +483,12 @@ public class TestUtils {
 			throws Exception {
 		XmlParser parser = new XmlParser();
 		// the next line is to suppress loading the dtd
-		parser
-				.setFeature(
-						"http://apache.org/xml/features/nonvalidating/load-external-dtd",
-						false);
+		parser.setFeature(
+			"http://apache.org/xml/features/nonvalidating/load-external-dtd",
+			false);
+		parser.setFeature(
+			"http://apache.org/xml/features/disallow-doctype-decl",
+			false);
 
 		Node doc = parser.parse(frameSummaryFile);
 		List<Node> list = doc.depthFirst();
@@ -584,7 +588,7 @@ public class TestUtils {
 
 	/**
 	 * Run Ant's junit task.   Typical usage:
-	 * 
+	 *
 	 * 			testUtil.junit(                         Types
 	 *				testClass     : 'mypackage.MyTest', String
 	 *				ant           : ant,                AntBuilder
@@ -599,7 +603,7 @@ public class TestUtils {
 	 *
 	 * @param hashMap
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static void junit(HashMap hashMap) throws Exception {
 		Path classpath = new Path(project);

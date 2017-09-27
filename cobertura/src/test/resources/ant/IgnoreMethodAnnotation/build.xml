@@ -15,7 +15,7 @@
 
 	<path id="project.classpath">
 		<path path="${java.class.path}" />
-		<!-- 
+		<!--
 		The next two should only come into play when running this script directly as
 		opposed to being called by a functional test.
 		-->
@@ -44,7 +44,7 @@
 				<include name="**/*.class" />
 				<exclude name="**/*Test*" />
 			</fileset>
-                        <ignoreMethodAnnotation annotationName="test.condition.CoverageIgnore"/>
+			<ignoreMethodAnnotation annotationName="test.condition.CoverageIgnore"/>
 		</cobertura-instrument>
 
 		<path id="test.classpath">
@@ -58,6 +58,7 @@
 			<classpath location="${classes.dir}" />
 			<classpath path="${java.class.path}" />
 			<classpath refid="project.classpath" />
+			<classpath location="." />
 
 			<formatter type="plain" usefile="false" />
 			<test name="test.condition.TestUnit" />

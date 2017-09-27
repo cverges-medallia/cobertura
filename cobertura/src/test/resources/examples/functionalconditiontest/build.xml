@@ -66,6 +66,7 @@
 	<target name="coverage-reports">
 		<mkdir dir="${coverage.xml.dir}" />
 		<cobertura-report datafile="${basedir}/cobertura.ser" srcdir="${src.dir}" destdir="${coverage.xml.dir}" format="xml" />
+		<cobertura-report datafile="${basedir}/cobertura.ser" srcdir="${src.dir}" destdir="${coverage.xml.dir}" format="summaryXml" />
 
 		<mkdir dir="${coverage.html.dir}" />
 		<!-- maxmemory is only specified to test the attribute -->

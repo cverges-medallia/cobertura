@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2008 John Lewis
  * Copyright (C) 2006 Mark Doliner
- * 
+ *
  * Note: This file is dual licensed under the GPL and the Apache
  * Source License 1.1 (so that it can be used from both the main
  * Cobertura classes and the ant tasks).
@@ -32,10 +32,10 @@ import net.sourceforge.cobertura.test.util.TestUtils;
 import org.apache.tools.ant.taskdefs.Java;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.xpath.XPath;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.xpath.XPath;
 import org.junit.Test;
 
 import java.io.*;

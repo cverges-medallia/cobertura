@@ -73,7 +73,7 @@ public class JDK7Test {
 		reportTask.execute();
 
 		/*
-		 * 
+		 *
 		 */
 		System.out.println(srcDir.getAbsolutePath());
 		dom = TestUtils.getXMLReportDOM(srcDir.getAbsolutePath()
@@ -207,5 +207,7 @@ public class JDK7Test {
 			+ "\n       FileOutputStream fos = new FileOutputStream(\"test.txt\");"
 			+ "\n       int a = 5/0;"
 			+ "\n     } catch (IOException | ArithmeticException e){"
-			+ "\n     }" + "\n   }" + "\n }";
+			+ "\n     }"
+			+ "\n   }"
+			+ "\n }";
 }

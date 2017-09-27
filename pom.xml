@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>7</version>
+        <version>9</version>
     </parent>
 
     <groupId>net.sourceforge.cobertura</groupId>
@@ -73,7 +73,7 @@
         <!-- Build definition properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <jdk.version>1.6</jdk.version>
+        <jdk.version>1.7</jdk.version>
 
         <!-- Code style properties -->
         <wtp.version>2.0</wtp.version>

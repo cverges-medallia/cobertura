@@ -54,24 +54,26 @@
  */
 
 
+import java.io.File;
 import org.apache.tools.ant.BuildException
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 
 //load testUtil definitions
 evaluate(new File("${ant.project.baseDir}/../../testUtil.groovy"))
 
 runReports = { set ->
-
 	//run a full xml report
 	ant."${reportTaskName}"(datafile:'${basedir}/cobertura.ser', srcdir:'${src.dir}', destdir:'${coverage.xml.dir}', format:'xml')
-	
+
 	def fullReport = readXMLReport("${ant.project.baseDir}/${properties.'coverage.xml.dir'}/coverage.xml")
 
 	//now run the summary report
-	ant."${reportTaskName}"(datafile:'${basedir}/cobertura.ser', srcdir:'${src.dir}', destdir:'${coverage.xml.dir}', format:'summaryxml')
+	ant."${reportTaskName}"(datafile:'${basedir}/cobertura.ser', srcdir:'${src.dir}', destdir:'${coverage.xml.dir}', format:'summaryXml')
 
 	def summary = readXMLReport("${ant.project.baseDir}/${properties.'coverage.xml.dir'}/coverage-summary.xml")
+	assertTrue((new File("${ant.project.baseDir}/${properties.'coverage.xml.dir'}/coverage-summary.xml")).exists())
 
 	assertEquals(fullReport.totalComplexity, summary.totalComplexity, 0)
 	assertEquals(fullReport.totalLineRate, summary.totalLineRate)
@@ -80,9 +82,9 @@ runReports = { set ->
 	assertEquals(fullReport.totalLinesValid, summary.totalLinesValid)
 	assertEquals(fullReport.totalBranchesCovered, summary.totalBranchesCovered)
 	assertEquals(fullReport.totalBranchesValid, summary.totalBranchesValid)
-	
+
 	ant.mkdir(dir:'${coverage.html.dir}')
-	
+
 	// maxmemory is only specified to test the attribute
 	ant."${reportTaskName}"([datafile:'${basedir}/cobertura.ser', destdir:'${coverage.html.dir}', maxmemory:'512M'], set)
 
@@ -91,10 +93,11 @@ runReports = { set ->
 readXMLReport = { xmlReport ->
 	def parser = new XmlParser()
 	parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false)
-	
+	parser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false)
+
 	def info = [:]
 	info.root = parser.parse(xmlReport)
-	
+
 	info.totalLineRate = rateToInt(info.root.'@line-rate')
 	info.totalBranchRate = rateToInt(info.root.'@branch-rate')
 	info.totalLinesCovered = info.root.'@lines-covered'.toInteger()
@@ -102,28 +105,28 @@ readXMLReport = { xmlReport ->
 	info.totalBranchesCovered = info.root.'@branches-covered'.toInteger()
 	info.totalBranchesValid = info.root.'@branches-valid'.toInteger()
 	info.totalComplexity = info.root.'@complexity'.toDouble()
-	
+
 	assertEquals("line-rate should equal lines-covered/lines-valid", info.totalLineRate, calculateRate(info.totalLinesCovered, info.totalLinesValid))
 	assertEquals("branch-rate should equal branches-covered/branches-valid", info.totalBranchRate, calculateRate(info.totalBranchesCovered, info.totalBranchesValid))
 
 	info
 }
- 
+
 checkRates = {
 	/*
 	 * Read the xml report to get the expected values
 	 */
 	def datafile = new File("${ant.project.baseDir}/cobertura.ser")
 	def xmlReport = new File("${ant.project.baseDir}/${ant.project.properties.'coverage.xml.dir'}/coverage.xml")
-	
+
 	def info = readXMLReport(xmlReport)
-	
-	
+
+
 	info.minPackageLineRate = rateToInt(info.root.packages.'package'.'@line-rate'*.toDouble().min().toString())
 	info.minPackageBranchRate = rateToInt(info.root.packages.'package'.'@branch-rate'*.toDouble().min().toString())
 	info.minClassLineRate = rateToInt(info.root.packages.'package'.classes.'class'.'@line-rate'*.toDouble().min().toString())
 	info.minClassBranchRate = rateToInt(info.root.packages.'package'.classes.'class'.'@branch-rate'*.toDouble().min().toString())
-	
+
 	def ratesMap = [
 			totallinerate:info.totalLineRate,
 			totalbranchrate:info.totalBranchRate,
@@ -132,7 +135,7 @@ checkRates = {
 			linerate:info.minClassLineRate,
 			branchrate:info.minClassBranchRate
 	]
-	
+
 	/*
 	 * Do a check with all the values - this should pass
 	 */
@@ -143,7 +146,7 @@ checkRates = {
 
 	/*
 	 * Now do a check with each rate individually.   Add one to make sure it fails.
-	 * 
+	 *
 	 * For those rates that equal 100, there is no way the check can fail, so do
 	 * a check to make sure it passes.
 	 */
@@ -158,11 +161,11 @@ checkRates = {
 			}
 		}
 	}
-	
+
 	if (!ratesMap.values().any { it < 50 }) {
 		ant.fail(message:"This test is expecting one rate to be under 50.   Otherwise the following test will fail.")
 	}
-	 
+
 	/*
 	 * Now do a check that does not specify any rates.   They should default to 50%.
 	 * This should fail.
@@ -171,24 +174,24 @@ checkRates = {
 	assertCheckFailure("Check with defaults should fail") {
 		 ant."${checkTaskName}"(datafile:datafile)
 	 }
-	 
+
 	/*
 	 * Now pass in all 0 values.   It should pass.
 	 */
 	ratesMap.keySet().each { tempMap.put(it, 0) }
 	ant.echo(message:"Doing a check with all zero rates: ${tempMap}")
 	ant."${checkTaskName}"(tempMap)
-	
+
 }
- 
- 
+
+
 rateToInt = { doubleString ->
 	doubleString = doubleString.toString()    //in case it is not a string
 	//multiply rate by 100 and drop the decimals
 	(Double.parseDouble(doubleString) * 100.0).intValue()
 }
- 
- 
+
+
 assertCheckFailure = { errorMessage, closure ->
 	boolean failed = false
 	try {
@@ -208,9 +211,3 @@ calculateRate = { covered, value ->
 	}
 	rateToInt(covered/value)
 }
- 
- 
- 
- 
- 
- 
